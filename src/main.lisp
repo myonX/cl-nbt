@@ -51,18 +51,15 @@
   (dolist (tag-form list)
     (eval tag-form))
   (nbt-write-byte 0))
-#|
-(macro-mapc print '(1 2 3 4))
-->
-(progn  (print 1) (print 2) (print 3) (print 4))
-|#
 
 (defun macro-mapc (operator-symbol list)
   (dolist (x list list) (eval `(,operator-symbol ,x))))
 
 
 (defun nbt-write-list (list)
-  (nbt-write-byte (cdr (assoc (concatenate-symbol 'tag- (car list)) *tag-type-number-alist*)))
+  (if (cdr list)
+      (nbt-write-byte (cdr (assoc (concatenate-symbol 'tag- (car list)) *tag-type-number-alist*)))
+      (nbt-write-byte 0))
   (nbt-write-integer (length (cdr list)))
   (let ((write-operator (concatenate-symbol 'nbt-write- (car list))) (rest-list (cdr list)))
        (mapc (lambda (x) (funcall write-operator x)) rest-list)

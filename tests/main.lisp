@@ -39,4 +39,9 @@
                   (let ((expected-file-path "tests/test-file/list-list-test.nbt") (operator-output-path "tests/output/list-list-test.nbt"))
                     (with-open-file (cl-nbt::*nbt-output* operator-output-path :direction :output :element-type '(unsigned-byte 8) :if-exists :supersede :if-does-not-exist :create)
                                   (tag-compound "" ((tag-list "list-list" (list (byte 1 2 3) (byte 4 5 6))))))
+                    (ok (equal-binary-file expected-file-path operator-output-path))))
+         (testing "void-list-test"
+                  (let ((expected-file-path "tests/test-file/void-list-test.nbt") (operator-output-path "tests/output/void-list-test.nbt"))
+                    (with-open-file (cl-nbt::*nbt-output* operator-output-path :direction :output :element-type '(unsigned-byte 8) :if-exists :supersede :if-does-not-exist :create)
+                                  (tag-compound "" ((tag-list "void-list" (byte)))))
                     (ok (equal-binary-file expected-file-path operator-output-path)))))

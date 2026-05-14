@@ -21,6 +21,13 @@ this
 (compound "" ((list "list-list" ('tag-list ('tag-byte 1 2 3) ('tag-byte 4 5 6)))))
 ~~~
 
+~~~
+(compound "" ((list "void-list" (byte ))))
+~~~
+~~~
+(compound "" ((list "void-list" ())))
+~~~
+
 ## Installation
 ## debug
 

@@ -7,3 +7,6 @@
 *.x86f
 *~
 .#*
+.vscode
+*.org
+tmp.lisp
