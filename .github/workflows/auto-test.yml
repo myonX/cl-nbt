@@ -12,7 +12,7 @@ jobs:
       uses: actions/checkout@v2
     - name: Test step
       id: test
-      uses: eshamster/try-cl-test-on-gh-actions@v0.3.1
+      uses: eshamster/try-cl-test-on-gh-actions@v0.3.2
       with:
         # 利用する処理系: 今のところ sbcl-bin or ccl-bin
         lisp: '${{ matrix.lisp }}'
