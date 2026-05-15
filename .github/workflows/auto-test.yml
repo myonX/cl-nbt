@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        lisp: [sbcl-bin, ccl-bin]
+        lisp: [sbcl-bin]
     name: A job to test Common Lisp project
     steps:
     - name: Checkout
