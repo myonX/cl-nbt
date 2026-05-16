@@ -55,11 +55,14 @@
 (defun macro-mapc (operator-symbol list)
   (dolist (x list list) (eval `(,operator-symbol ,x))))
 
+
 (defun nbt-write-list (list)
-  (nbt-write-byte (cdr (assoc (concatenate-symbol 'tag- (car list)) *tag-type-number-alist*)))
+  (if (cdr list)
+      (nbt-write-byte (cdr (assoc (concatenate-symbol 'tag- (car list)) *tag-type-number-alist*)))
+      (nbt-write-byte 0))
   (nbt-write-integer (length (cdr list)))
   (let ((write-operator (concatenate-symbol 'nbt-write- (car list))) (rest-list (cdr list)))
-       (macro-mapc write-operator rest-list)
+       (mapc (lambda (x) (funcall write-operator x)) rest-list)
        ))
 
 (defun write-tag-helper (&key tag-type tag-name-string)
@@ -85,19 +88,12 @@
   (nbt-write-byte data))
 |#
 
-#|
-(defmacro define-tag (tag-name)
-  (let ((tag-type (concatenate-symbol 'tag- tag-name)) (nbt-write-type (concatenate-symbol 'nbt-write- tag-name)))
-      `(defmacro ,tag-type (tag-name-string data)
-          `(progn (write-tag-helper :tag-type ,',tag-type :tag-name-string ,,'tag-name-string)
-                  (,',nbt-write-type ',,'data)))))
-|#
 
 (defmacro define-tag (tag-name)
   (let ((tag-type (concatenate-symbol 'tag- tag-name)) (nbt-write-type (concatenate-symbol 'nbt-write- tag-name)))
-      `(defun ,tag-type (tag-name-string data)
-          (write-tag-helper :tag-type ',tag-type :tag-name-string tag-name-string)
-          (,nbt-write-type data))))
+      `(defmacro ,tag-type (tag-name-string data)
+          `(progn (write-tag-helper :tag-type ',',tag-type :tag-name-string ,,'tag-name-string)
+                  (,',nbt-write-type ',,'data)))))
 
 (define-tag byte)
 
@@ -112,19 +108,10 @@
 (define-tag double)
 
 (define-tag string)
-#|
+
 (define-tag list)
 
 (define-tag compound)
-|#
-
-(defmacro tag-list (tag-name-string list)
-  `(progn (write-tag-helper :tag-type 'tag-list :tag-name-string ,tag-name-string)
-          (nbt-write-list (quote ,list))))
-
-(defmacro tag-compound (tag-name-string tag)
-  `(progn (write-tag-helper :tag-type 'tag-compound :tag-name-string ,tag-name-string)
-          (nbt-write-compound (quote ,tag))))
 
 #|
 (with-open-file (cl-nbt::*nbt-output* "tmp.bin" :direction :output :element-type '(unsigned-byte 8))
