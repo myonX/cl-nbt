@@ -19,7 +19,8 @@
            :nbt-write-double
            :nbt-write-string
            :nbt-write-list
-           :nbt-write-compound))
+           :nbt-write-compound
+           :*nbt-output*))
 (in-package #:cl-nbt)
 
 (defvar *nbt-output*)
@@ -49,7 +50,7 @@
 
 (defun nbt-write-compound (list)
   (dolist (tag-form list)
-    (eval tag-form))
+          (eval tag-form))
   (nbt-write-byte 0))
 
 (defun macro-mapc (operator-symbol list)
