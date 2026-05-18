@@ -1,7 +1,8 @@
 (defpackage cl-nbt/tests/main
   (:use :cl
         :cl-nbt
-        :rove))
+        :rove
+        :alexandria))
 (in-package :cl-nbt/tests/main)
 
 ;; NOTE: To run this test file, execute `(asdf:test-system :cl-nbt)' in your Lisp.
@@ -9,14 +10,9 @@
 (defun equal-binary-file (path-1 path-2)
   (with-open-file (path-1-in path-1 :direction :input :element-type '(unsigned-byte 8))
                   (with-open-file (path-2-in path-2 :direction :input :element-type '(unsigned-byte 8))
-                  (let ((path-1-list (read-binary-sequence path-1-in))
-                        (path-2-list (read-binary-sequence path-2-in)))
+                  (let ((path-1-list (alexandria:read-file-into-byte-vector path-1-in))
+                        (path-2-list (alexandria:read-file-into-byte-vector path-2-in)))
                        (equal path-1-list path-2-list)))))
-
-(defun read-binary-sequence (stream &optional (list nil))
-  (let ((result-byte (read-byte stream nil)))
-       (if result-byte (read-binary-sequence stream (cons result-byte list))
-                       (reverse list))))
 
 (deftest tag-test
          (testing "number-tags-test"
