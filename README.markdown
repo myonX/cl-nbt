@@ -1,5 +1,5 @@
 # Cl-Nbt
-a library for generate minecraft-bedrock-nbt
+a library for generate minecraft-bedrock-nbt files
 
 ## examples
 first of all,you have to bind `*nbt-output*`
