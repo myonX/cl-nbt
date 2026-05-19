@@ -10,7 +10,12 @@ jobs:
       matrix:
         lisp:
           - sbcl-bin
-          
+          - abcl-bin
+          - ccl-bin
+          - clasp-bin
+          - clisp-head
+          - cmu-bin
+          - ecl
     env:
       LISP: ${{ matrix.lisp }}
 
