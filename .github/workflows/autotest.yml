@@ -21,4 +21,4 @@ jobs:
           asdf-system: cl-nbt
       - uses: 40ants/run-tests@v2
         with:
-          asdf-system: cl-nbt/test
+          asdf-system: cl-nbt/tests
