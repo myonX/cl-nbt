@@ -22,4 +22,4 @@ jobs:
         with:
           asdf-system: cl-nbt/tests
       - run: |
-          qlot exec ros run -- --eval '(asdf:test-system :cl-nbt)' --quit
+          qlot exec ros run -- --eval '(asdf:test-system :cl-nbt)'
