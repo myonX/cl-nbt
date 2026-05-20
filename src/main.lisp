@@ -53,10 +53,6 @@
           (eval tag-form))
   (nbt-write-byte 0))
 
-(defun macro-mapc (operator-symbol list)
-  (dolist (x list list) (eval `(,operator-symbol ,x))))
-
-
 (defun nbt-write-list (list)
   (if (cdr list)
       (nbt-write-byte (cdr (assoc (concatenate-symbol 'tag- (car list)) *tag-type-number-alist*)))
@@ -74,13 +70,8 @@
 (eval-when (:compile-toplevel :load-toplevel :execute)
            (defun concatenate-symbol (symbol-1 symbol-2)
                   (intern (concatenate 'string (symbol-name symbol-1) (symbol-name symbol-2)))))
-#|
-(define-tag byte)
-->
-(DEFMACRO TAG-BYTE (TAG-NAME-STRING DATA &REST REST)
-  `(progn (WRITE-NBT-HELPER :TAG-TYPE 'TAG-BYTE :TAG-NAME-STRING ,TAG-NAME-STRING)
-          (NBT-WRITE-BYTE DATA ,@rest)))
-|#
+
+
 #|
 (define-tag byte)
 ->
@@ -88,7 +79,6 @@
   (write-tag-helper :tag-type byte :tag-name-string tag-name-string)
   (nbt-write-byte data))
 |#
-
 
 (defmacro define-tag (tag-name)
   (let ((tag-type (concatenate-symbol 'tag- tag-name)) (nbt-write-type (concatenate-symbol 'nbt-write- tag-name)))
@@ -113,8 +103,3 @@
 (define-tag list)
 
 (define-tag compound)
-
-#|
-(with-open-file (cl-nbt::*nbt-output* "tmp.bin" :direction :output :element-type '(unsigned-byte 8))
-  (cl-nbt::tag-list "list" '(1 2 3) :element-type byte))
-|#
