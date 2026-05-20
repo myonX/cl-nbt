@@ -1,35 +1,25 @@
 on:
   push:
-  workflow_dispatch:
-
+  pull_request:
 
 jobs:
-  setup:
+  tests:
     runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        lisp:
+          - sbcl-bin
+          - abcl-bin
+          - ccl-bin
+
+    env:
+      LISP: ${{ matrix.lisp }}
+
     steps:
+      - uses: actions/checkout@v1
+      - uses: 40ants/setup-lisp@v4
+        with:
+          asdf-system: cl-nbt/tests
       - run: |
-          sudo apt update
-          sudo apt -y  install sbcl
-          curl -O http://beta.quicklisp.org/quicklisp.lisp
-          sbcl --load quicklisp.lisp \
-               --eval '(quicklisp-quickstart:install)' \
-               --quit
-
-          echo '#-quicklisp (let ((init (merge-pathnames "quicklisp/setup.lisp" (user-homedir-pathname)))) (when (probe-file init) (load init)))' > ~/.sbclrc
-
-          sbcl --eval '(print ql:*quicklisp-home*)' \
-               --quit
-      - uses: actions/checkout@v4
-      - run: |
-          ln -s $GITHUB_WORKSPACE ~/quicklisp/local-projects/cl-nbt
-          cd  $GITHUB_WORKSPACE
-          sbcl --eval '(progn (ql:register-local-projects)
-                              (ql:quickload :nibbles)
-                              (ql:quickload :babel)
-                              (ql:quickload :rove))' \
-               --quit
-      - run: |
-          echo "::group::test-cl-nbt"
-          sbcl --eval '(asdf:test-system :cl-nbt)' \
-               --quit
-          echo "::endgroup::"
+          qlot exec ros run -- --eval '(asdf:test-system :cl-nbt)'
