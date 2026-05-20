@@ -21,6 +21,5 @@ jobs:
       - uses: 40ants/setup-lisp@v4
         with:
           asdf-system: cl-nbt/tests
-      - uses: 40ants/run-tests@v2
-        with:
-          asdf-system: cl-nbt
+      - run |
+        qlot exec ros run -- --eval '(asdf:test-system :cl-nbt)' --quit
