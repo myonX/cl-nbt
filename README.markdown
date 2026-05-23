@@ -38,8 +38,7 @@ please edit "output-file-path"
                  :element-type '(unsigned-byte 8) 
                  :if-exists :supersede 
                  :if-does-not-exist :create)
-                (compound "" ((list "list-list" ('tag-list ('tag-byte 1 2 3) 
-                                                           ('tag-byte 4 5 6))))))
+                (compound "" ((list "list-list" (list (byte 1 2 3) (byte 4 5 6))))))
 ~~~
 
 #### empty list
@@ -59,6 +58,16 @@ or
                  :if-exists :supersede 
                  :if-does-not-exist :create)
                 (compound "" ((list "empty-list" ()))))
+~~~
+#### 
+~~~lisp
+(with-open-file (cl-nbt:*nbt-output* "output-file-path" 
+                 :direction :output 
+                 :element-type '(unsigned-byte 8) 
+                 :if-exists :supersede 
+                 :if-does-not-exist :create)
+                (compound "" ((list "compound-list" (compound ((tag-byte "byte" 1)) ((tag-integer "integer" 1)))))))
+
 ~~~
 
 ## Running Tests
