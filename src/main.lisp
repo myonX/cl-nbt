@@ -20,7 +20,8 @@
            :nbt-write-string
            :nbt-write-list
            :nbt-write-compound
-           :*nbt-output*))
+           :*nbt-output*
+           :serialize-tags))
 (in-package #:cl-nbt)
 
 (defvar *nbt-output*)
@@ -103,3 +104,11 @@
 (define-tag list)
 
 (define-tag compound)
+
+(defmacro serialize-tags (path tags)
+  `(with-open-file (*nbt-output* ,path
+    :direction :output
+    :element-type '(unsigned-byte 8)
+    :if-exists :supersede
+    :if-does-not-exist :create)
+     ,@(cdr tags)))
