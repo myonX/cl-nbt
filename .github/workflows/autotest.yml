@@ -22,4 +22,4 @@ jobs:
         with:
           asdf-system: cl-nbt/tests
       - run: |
-          qlot exec ros run -- --eval '(uiop:quit (if (rove:run "cl-nbt/tests") 0 1))'
+          qlot exec ros run -- --eval '(progn (ql:quickloaf :rove) (uiop:quit (if (rove:run "cl-nbt/tests") 0 1)))'
