@@ -17,9 +17,12 @@ jobs:
       LISP: ${{ matrix.lisp }}
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v1
       - uses: 40ants/setup-lisp@v4
         with:
           asdf-system: cl-nbt/tests
       - run: |
-          qlot exec ros run -- --eval '(asdf:test-system :cl-nbt)'
+          rm -rf ~/.cache/common-lisp/
+          qlot exec ros run -- \
+            --eval '(ql:quickload :cl-nbt/tests)' \
+            --eval '(let ((result (rove:run :cl-nbt/tests))) (uiop:quit (if result 0 1)))'
