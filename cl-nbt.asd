@@ -14,7 +14,8 @@
   :license "MIT"
   :depends-on ("cl-nbt"
                "rove"
-               "alexandria")
+               "alexandria"
+               "flexi-streams")
   :components ((:module "tests"
                 :components
                 ((:file "main"))))

@@ -50,8 +50,8 @@
   (write-sequence (babel:string-to-octets string :encoding :utf-8) *nbt-output*))
 
 (defun nbt-write-compound (list)
-  (dolist (tag-form list)
-          (eval tag-form))
+  (dolist (thunk list)
+          (funcall thunk))
   (nbt-write-byte 0))
 
 (defun nbt-write-list (list)
@@ -82,10 +82,11 @@
 |#
 
 (defmacro define-tag (tag-name)
-  (let ((tag-type (concatenate-symbol 'tag- tag-name)) (nbt-write-type (concatenate-symbol 'nbt-write- tag-name)))
-      `(defmacro ,tag-type (tag-name-string data)
-          `(progn (write-tag-helper :tag-type ',',tag-type :tag-name-string ,,'tag-name-string)
-                  (,',nbt-write-type ',,'data)))))
+  (let ((tag-type (concatenate-symbol 'tag- tag-name))
+        (nbt-write-type (concatenate-symbol 'nbt-write- tag-name)))
+    `(defun ,tag-type (tag-name-string data)
+       (lambda () (write-tag-helper :tag-type ',tag-type :tag-name-string tag-name-string)
+                  (,nbt-write-type data)))))
 
 (define-tag byte)
 
@@ -105,10 +106,10 @@
 
 (define-tag compound)
 
-(defmacro serialize-tags (path tags)
-  `(with-open-file (*nbt-output* ,path
+(defun serialize-tags (path tags)
+  (with-open-file (*nbt-output* path
     :direction :output
     :element-type '(unsigned-byte 8)
     :if-exists :supersede
     :if-does-not-exist :create)
-     ,@(cdr tags)))
+    (funcall tags)))
