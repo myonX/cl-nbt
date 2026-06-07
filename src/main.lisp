@@ -70,7 +70,8 @@
 ;Alexandriaのformat-symbolでいいね
 (eval-when (:compile-toplevel :load-toplevel :execute)
            (defun concatenate-symbol (symbol-1 symbol-2)
-                  (intern (concatenate 'string (symbol-name symbol-1) (symbol-name symbol-2)))))
+             (intern (concatenate 'string (symbol-name symbol-1) (symbol-name symbol-2))
+                     (symbol-package symbol-1))))
 
 
 #|
