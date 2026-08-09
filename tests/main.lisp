@@ -23,46 +23,7 @@
 (defparameter *compound-list-test-expected* #(10 0 0 9 13 0 99 111 109 112 111 117 110 100 45 108 105 115 116 10 2 0 0 0 1
   4 0 98 121 116 101 1 0 3 7 0 105 110 116 101 103 101 114 1 0 0 0 0 0))
 
-#|
-(defmacro tag-testing (testing-word expected-file-path operator-output-path tag)
-  `(testing ,testing-word
-     (progn (cl-nbt:serialize-tags (xxx->cl-nbt/xxx ,operator-output-path)
-                                   ',tag)
-            (ok (equal-binary-file ,expected-file-path ,operator-output-path)))))
 
-(defmacro def-tag-test (test-name &rest rest)
-  `(deftest ,(quote test-name) ,@(mapcar (lambda (element) (macroexpand-1 `(tag-testing ,@element))) rest)))
-
-(def-tag-test tag-test
-  ("nubmer-tags-test"
-   "tests/test-file/number-test.nbt"
-   "tests/output/number-result.nbt"
-   (tag-compound "" (list (tag-byte "byte" 1)
-                     (tag-short "short" 1)
-                     (tag-integer "integer" 1)
-                     (tag-long "long" 1)
-                     (tag-float "float" 1.0)
-                     (tag-double "double" 1.0d0)
-                     (tag-string "string" "string"))))
-  ("list-tag-test"
-   "tests/test-file/list-test.nbt"
-   "tests/output/list-result.nbt"
-   (tag-compound "" (list (tag-list "byte-list" (byte 1 2 3)))))
-  ("list-list-test"
-   "tests/test-file/list-list-test.nbt"
-   "tests/output/list-list-test.nbt"
-   (tag-compound "" (list (tag-list "list-list" (list (byte 1 2 3) (byte 4 5 6))))))
-  ("void-list-test"
-   "tests/test-file/void-list-test.nbt"
-   "tests/output/void-list-test.nbt"
-   (tag-compound "" (list (tag-list "void-list" (byte)))))
-  ("compound-list-test"
-   "tests/test-file/compound-list.nbt"
-   "tests/output/compound-list-test.nbt"
-   (tag-compound "" (list (tag-list "compound-list"
-                               (compound (list (tag-byte "byte" 1))
-                                         (list (tag-integer "integer" 1))))))))
-|#
 (defun tag->vector (tag)
   (flexi-streams:with-output-to-sequence (*nbt-output*
                                           :element-type '(unsigned-byte 8))
