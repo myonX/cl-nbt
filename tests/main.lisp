@@ -53,20 +53,27 @@
                                                               (list 'compound (list (tag-byte "byte" 1))
                                                                     (list (tag-integer "integer" 1)))))))))))
 ;
-(deftest write-nbt
+(deftest parse-nbt
   (testing "number-tags-test"
     (ok (equalp '(tag-compound "" (list (tag-byte "byte" 1)(tag-short "short" 1)(tag-integer "integer" 1)(tag-long "long" 1)(tag-float "float" 1.0)(tag-double "double" 1.0d0)(tag-string "string" "string")))
-                (parse-tags *number-test-expected*))))
+                (flexi-streams:with-input-from-sequence (in *number-test-expected*)
+                                                        (parse-tags in)))))
   (testing "list-tsg-test"
-    (ok (equalp (parse-tags *list-test-expected*) '(tag-compound "" (list (tag-list "byte-list" '(byte 1 2 3)))))))
+           (ok (equalp (flexi-streams:with-input-from-sequence (in *list-test-expected*)
+                                                               (parse-tags in))
+                       '(tag-compound "" (list (tag-list "byte-list" '(byte 1 2 3)))))))
   (testing "list-list-test"
-    (ok (equalp  (parse-tags *list-list-test-expected*)
+           (ok (equalp
+                (flexi-streams:with-input-from-sequence (in *list-list-test-expected*)
+                                                        (parse-tags in))
                 '(tag-compound "" (list (tag-list "list-list" '(list (byte 1 2 3) (byte 4 5 6))))))))
   (testing "void-list-test"
-    (ok (equalp  (parse-tags *void-list-test-expected*)
+           (ok (equalp (flexi-streams:with-input-from-sequence (in *void-list-test-expected*)
+                                                        (parse-tags in))
                 '(tag-compound "" (list (tag-list "void-list" '(byte)))))))
   (testing "compound-list-test"
-    (ok (equalp  (parse-tags *compound-list-test-expected*)
+           (ok (equalp (flexi-streams:with-input-from-sequence (in *compound-list-test-expected*)                                                        
+                                                        (parse-tags in))
                 '(tag-compound "" (list (tag-list "compound-list"
                                                               (list 'compound (list (tag-byte "byte" 1))
                                                                     (list (tag-integer "integer" 1))))))))))
