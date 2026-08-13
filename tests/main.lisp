@@ -46,7 +46,7 @@
                 (tag->vector (tag-compound "" (list (tag-list "list-list" '(list (byte 1 2 3) (byte 4 5 6)))))))))
   (testing "void-list-test"
     (ok (equalp *void-list-test-expected*
-                (tag->vector (tag-compound "" (list (tag-list "void-list" '(byte))))))))
+                (tag->vector (tag-compound "" (list (tag-list "void-list" '(end-of-compound))))))))
   (testing "compound-list-test"
     (ok (equalp *compound-list-test-expected*
                 (tag->vector (tag-compound "" (list (tag-list "compound-list"
@@ -70,7 +70,7 @@
   (testing "void-list-test"
            (ok (equalp (flexi-streams:with-input-from-sequence (in *void-list-test-expected*)
                                                         (parse-tags in))
-                '(tag-compound "" (list (tag-list "void-list" '(byte)))))))
+                '(tag-compound "" (list (tag-list "void-list" '(end-of-compound)))))))
   (testing "compound-list-test"
            (ok (equalp (flexi-streams:with-input-from-sequence (in *compound-list-test-expected*)                                                        
                                                         (parse-tags in))

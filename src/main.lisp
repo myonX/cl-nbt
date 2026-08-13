@@ -22,7 +22,9 @@
            :nbt-write-compound
            :*nbt-output*
            :serialize-tags
-           :parse-tags))
+           :parse-tags
+           :end-of-compound
+           :compound))
 (in-package #:cl-nbt)
 
 (defvar *nbt-output*)
@@ -150,7 +152,39 @@
                  (10 ,ten-form)))
 
 (defun parse-compound (binary-stream)
-       )
+       (cons 'list
+             (loop for tag-byte-num = (read-byte binary-stream)
+                   until (zerop tag-byte-num)
+                   collect (parse-tags binary-stream tag-byte-num))))
+
+(defun parse-list (binary-stream)
+  (let ((type-num (read-byte binary-stream))
+        (amount-of-element (nibbles:read-sb32/le binary-stream)))
+       (cons (ten-case type-num
+                                                     'end-of-compound
+                                                     'byte
+                                                     'short
+                                                     'integer
+                                                     'long
+                                                     'float
+                                                     'double
+                                                     ()
+                                                     'string
+                                                     'list
+                                                     'compound)
+                                           (loop repeat amount-of-element
+                                                 collect (ten-case type-num  
+                                                                   ()
+                                                                   (read-byte binary-stream)
+                                                                   (nibbles:read-sb16/le binary-stream)
+                                                                   (nibbles:read-sb32/le binary-stream)  
+                                                                   (nibbles:read-sb64/le binary-stream)
+                                                                   (nibbles:read-ieee-single/le binary-stream)
+                                                                   (nibbles:read-ieee-double/le binary-stream)
+                                                                   ()
+                                                                   (parse-string binary-stream)
+                                                                   (parse-list binary-stream)
+                                                                   (parse-compound binary-stream))))))
 
 (defun parse-tags (binary-stream &optional (type-number (read-byte binary-stream)))
        (ten-case type-number
@@ -177,10 +211,13 @@
               (parser-helper 8
                              (parse-string binary-stream)
                              (parse-string binary-stream))
-              ()
+              (parser-helper 9
+                             (parse-string binary-stream)
+                             (let ((a (parse-list binary-stream)));ひどい変数名だ!
+                               (if (equalp (car a) 'compound)
+                                   `(list 'compound ,@(cdr a))
+                                   (list 'quote a))))
               (parser-helper 10
                              (parse-string binary-stream)
-                             (cons 'list
-                                   (loop for tag-byte-num = (read-byte binary-stream)
-                                         until (zerop tag-byte-num)
-                                         collect (parse-tags binary-stream tag-byte-num))))))
+                             (parse-compound binary-stream))))
+;; NOTE: To run this test file, execute `(asdf:test-system :cl-nbt)' in your Lisp.
