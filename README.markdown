@@ -1,5 +1,5 @@
 # Cl-Nbt
-a library to  generate minecraft-bedrock-nbt files
+a library to generate and read minecraft-bedrock-nbt files
 
 ## examples
 
