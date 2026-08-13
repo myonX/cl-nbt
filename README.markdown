@@ -47,6 +47,10 @@ or
                                                         (list 'compound (list (tag-byte "byte" 1))
                                                                         (list (tag-integer "integer" 1)))))))
 ~~~
+### parse bedrock nbt
+~~~lisp
+(with-open-file (in "filepath" :direction :input :element-type '(unsigned-byte 8) ) (cl-nbt:parse-tags in))
+~~~
 
 ## Running Tests
 ~~~lisp
