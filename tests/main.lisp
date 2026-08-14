@@ -46,9 +46,34 @@
                 (tag->vector (tag-compound "" (list (tag-list "list-list" '(list (byte 1 2 3) (byte 4 5 6)))))))))
   (testing "void-list-test"
     (ok (equalp *void-list-test-expected*
-                (tag->vector (tag-compound "" (list (tag-list "void-list" '(byte))))))))
+                (tag->vector (tag-compound "" (list (tag-list "void-list" '(end-of-compound))))))))
   (testing "compound-list-test"
     (ok (equalp *compound-list-test-expected*
                 (tag->vector (tag-compound "" (list (tag-list "compound-list"
                                                               (list 'compound (list (tag-byte "byte" 1))
-                                                                        (list (tag-integer "integer" 1)))))))))))
+                                                                    (list (tag-integer "integer" 1)))))))))))
+;
+(deftest parse-nbt
+  (testing "number-tags-test"
+    (ok (equalp '(tag-compound "" (list (tag-byte "byte" 1)(tag-short "short" 1)(tag-integer "integer" 1)(tag-long "long" 1)(tag-float "float" 1.0)(tag-double "double" 1.0d0)(tag-string "string" "string")))
+                (flexi-streams:with-input-from-sequence (in *number-test-expected*)
+                                                        (parse-tags in)))))
+  (testing "list-tsg-test"
+           (ok (equalp (flexi-streams:with-input-from-sequence (in *list-test-expected*)
+                                                               (parse-tags in))
+                       '(tag-compound "" (list (tag-list "byte-list" '(byte 1 2 3)))))))
+  (testing "list-list-test"
+           (ok (equalp
+                (flexi-streams:with-input-from-sequence (in *list-list-test-expected*)
+                                                        (parse-tags in))
+                '(tag-compound "" (list (tag-list "list-list" '(list (byte 1 2 3) (byte 4 5 6))))))))
+  (testing "void-list-test"
+           (ok (equalp (flexi-streams:with-input-from-sequence (in *void-list-test-expected*)
+                                                        (parse-tags in))
+                '(tag-compound "" (list (tag-list "void-list" '(end-of-compound)))))))
+  (testing "compound-list-test"
+           (ok (equalp (flexi-streams:with-input-from-sequence (in *compound-list-test-expected*)                                                        
+                                                        (parse-tags in))
+                '(tag-compound "" (list (tag-list "compound-list"
+                                                              (list 'compound (list (tag-byte "byte" 1))
+                                                                    (list (tag-integer "integer" 1))))))))))

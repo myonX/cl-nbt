@@ -1,5 +1,5 @@
 # Cl-Nbt
-a library to  generate minecraft-bedrock-nbt files
+a library to generate and read minecraft-bedrock-nbt files
 
 ## examples
 
@@ -46,6 +46,10 @@ or
                        (tag-compound "" (list (tag-list "compound-list"
                                                         (list 'compound (list (tag-byte "byte" 1))
                                                                         (list (tag-integer "integer" 1)))))))
+~~~
+### parse bedrock nbt
+~~~lisp
+(with-open-file (in "filepath" :direction :input :element-type '(unsigned-byte 8) ) (cl-nbt:parse-tags in))
 ~~~
 
 ## Running Tests
